@@ -98,7 +98,7 @@ def login():
         else:
             good_or_bad="nicknameかpasswordが間違っています。"
     elif request.method == 'GET':
-        good_or_bad="コメント追加やコメント削除にはログインが必要です"
+        good_or_bad="チャットを始めるにはログインが必要です"
     return render_template('login.html', good_or_bad=good_or_bad, nickname=nickname)
 
 @app.route('/logout')
