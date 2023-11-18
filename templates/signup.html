@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Signup</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <a href="{{ url_for('home') }}">Back to Home</a>
+  <h4>あなたは {{ nickname }} </h4>
+  <h1>サインアップ画面</h1>
+  <form method="POST">
+    <label for="nickname">Nickname</label>
+    <input type="text" id="nickname" name="nickname" required>
+    <br>
+    <label for="password">Password</label>
+    <input type="text" id="password" name="password" required>
+    <br>
+    <input type="submit" value="Signup">
+  </form>
+  <h4>{{ already_used_or_not }}</h4>
+</body>
+</html>

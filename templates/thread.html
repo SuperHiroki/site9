@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chat Room</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body data-current-user-id="{{ current_user.id }}">
+  <a href="{{ url_for('home') }}">Leave room</a>
+  <h4>あなたは {{ nickname }} </h4>
+  <!--現在までのBlogの中身を表示-->
+  <h1 class="red-text">Room ID : {{ thread.id }}</h1>
+  <h1 class="blue-text">Room Title : {{ thread.room_name }}</h1>
+  <ul>
+    {% for conversation, nickname, selfornot in conversations_with_nicknames_selfornot %}
+      <li>
+        <p class="{{ 'red-text' if selfornot else '' }}">Chat ID: {{ conversation.id }} / Time: {{ conversation.timestamp }} / Nickname: {{ nickname }} ＞<br> {{ conversation.content | safe }}</p>
+      </li>
+    {% endfor %}
+  </ul>
+  <div id="messages"></div>
+  <div>
+    <textarea id="input" rows="10" class="comment_form" required></textarea>
+    <button id="send" class="button_class">Send</button>
+  </div>
+  <br>
+  <a href="{{ url_for('home') }}">Leave room</a>
+<!--JavaScript-->
+  <script type="text/javascript">
+    const socket = io();
+    const roomId = "{{ thread.id }}";
+    const currentUserId = Number($('body').data('current-user-id'));
+    /*join*/
+    $(document).ready(function() {
+      socket.emit('join', {room_id: roomId});
+      $('html, body').animate({ scrollTop: $(document).height() }, 'normal');
+    });
+    socket.on('join_room', function(message) {
+      var content=message['nickname'] + 'さんが入室しました';
+      var content_html=$('<p>').html(content).css('color', 'green');
+      $('#messages').append(content_html);
+    });
+    /*leave*///使ってない
+    $('#leave').click(function() {
+      socket.emit('leave', {room_id: roomId});
+    });
+    socket.on('leave_room', function(message) {
+      var content=message['nickname'] + 'さんが退室しました';
+      var content_html=$('<p>').html(content).css('color', 'blue');
+      $('#messages').append(content_html);
+    });
+    /*conversation*/
+    $('#send').click(function() {
+      var inputVal = $('#input').val();
+      if (inputVal.trim() === '') {
+        alert('Please enter some text.');
+      } else {
+        socket.emit('send_message', {content: inputVal, room_id: roomId});
+      }
+    });
+    socket.on('receive_message', function(message) {
+      var comment='Chat ID: ?' + ' / Time: ' + message.timestamp + ' / Nickname: ' + message.user_nickname + '＞ <br>' + message.content;
+      var comment_html=$('<p>').html(comment);
+      if (message.user_id === currentUserId) {
+          comment_html.css('color', 'red');
+      }
+      $('#messages').append(comment_html);
+    });
+  </script>
+</body>
+</html>
+

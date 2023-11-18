@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Home</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <h1 class="red-text">Realtime Chat Home</h1>
+  <h1 class="blue-text">管理者: ShiroatoHiro</h1>
+  <h4>あなたは {{ nickname }} </h4>
+  <a href="{{ url_for('signup') }}">Signup</a><br>
+  <a href="{{ url_for('login') }}">Login</a><br>
+  <a href="{{ url_for('logout') }}">Logout</a>
+  <p>このウェブサイトでは、複数人でリアルタイムのチャットができます。</p>
+  {% if login_true_or_false %}
+  <ul>
+    {% for room, creatornickname, entryusers  in rooms_with_creatornicknames_entryusers %}
+      <li>
+        <a href="{{ url_for('view_thread', thread_id = room.id) }}">Room ID: {{ room.id }} / Room Name: {{ room.room_name }} / Room Creator: {{ creatornickname }} / Entry Users: {{ entryusers }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+    <p class="red-text">{{ roomid_password_wrong_or_not }}</p>
+    <p class="green-text">部屋に入る</p>
+    <form method="POST">
+      <label for="enter_room_id">Room ID:</label>
+      <input id="enter_room_id" name="enter_room_id" required>
+      <br>
+      <label for="enter_room_password">Room Password:</label>
+      <input id="enter_room_password" name="enter_room_password" required>
+      <input type="submit" value="Enter Room" class="button_class">
+    </form>
+    <p class="green-text">新しい部屋を作る</p>
+    <form method="POST">
+      <label for="new_room_name">Room Name:</label>
+      <input id="new_room_name" name="new_room_name" required>
+      <br>
+      <label for="new_room_password">Room Password:</label>
+      <input id="new_room_password" name="new_room_password" required>
+      <br>
+      <label for="new_room_password2">Room Password(確認用):</label>
+      <input id="new_room_password2" name="new_room_password2" required>
+      <input type="submit" value="New Room" class="button_class">
+    </form>
+  {% else %}
+    <p>Realtime Chatを始めるにはログインをしてください。</p>
+  {% endif %}
+</body>
+</html>

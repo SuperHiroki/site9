@@ -1,0 +1,19 @@
+.comment_form {
+    width: 95%;
+}
+.red-text {
+    color: red;
+}
+.blue-text {
+    color: blue;
+}
+.green-text {
+    color: green;
+}
+p {
+    word-wrap: break-word;
+}
+.button_class{
+    width: 130px;
+    height: 43px;
+}
